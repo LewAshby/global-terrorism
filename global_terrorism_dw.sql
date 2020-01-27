@@ -23,7 +23,8 @@ CREATE TABLE `dt_date` (
 CREATE TABLE `dt_weapon_type` (
   `sur_key_wt` int PRIMARY KEY AUTO_INCREMENT,
   `id_wt` int,
-  `type` varchar(255)
+  `weapon_type` varchar(255),
+  `weapon_subtype` varchar(255)
 );
 
 CREATE TABLE `dt_group_name` (
@@ -62,7 +63,8 @@ CREATE TABLE `dt_location` (
   `id_city` int,
   `city` varchar(255),
   `latitude` double,
-  `longitude` double
+  `longitude` double,
+  `location` varchar(255)
 );
 
 CREATE TABLE `ft_attack` (
