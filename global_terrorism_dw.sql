@@ -15,9 +15,7 @@ CREATE TABLE `dt_date` (
   `month_abbreviation` varchar(5),
   `quarter_number` int,
   `quarter_name` varchar(255),
-  `is_weekend` boolean,
-  `is_holiday` boolean,
-  `holiday_name` varchar(255)
+  `is_weekend` boolean
 );
 
 CREATE TABLE `dt_weapon_type` (
@@ -64,7 +62,7 @@ CREATE TABLE `dt_location` (
   `city` varchar(255),
   `latitude` double,
   `longitude` double,
-  `location` varchar(255)
+  `location` mediumtext
 );
 
 CREATE TABLE `ft_attack` (
