@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Load-Dim-Location</name>
+    <name>Load-Fact-Attack</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,34 +427,13 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/01/26 23:34:00.382</created_date>
+    <created_date>2020/01/27 12:10:49.076</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/01/26 23:34:00.382</modified_date>
+    <modified_date>2020/01/27 12:10:49.076</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
-    <notepad>
-      <note>table input tiene puesto limit </note>
-      <xloc>32</xloc>
-      <yloc>176</yloc>
-      <width>207</width>
-      <heigth>30</heigth>
-      <fontname>Segoe UI</fontname>
-      <fontsize>9</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>global_terrorism</name>
@@ -569,48 +548,58 @@
   <order>
     <hop>
       <from>Table input</from>
-      <to>Sort rows</to>
+      <to>If field value is null</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Sort rows</from>
-      <to>Unique rows</to>
+      <from>If field value is null</from>
+      <to>Modified JavaScript value</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Unique rows</from>
+      <from>Modified JavaScript value</from>
       <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Select values</from>
-      <to>replace null location with unknown</to>
+      <to>dim_location</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>replace null location with unknown</from>
-      <to>Filter rows</to>
+      <from>dim_location</from>
+      <to>dim_weapon_type</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>CPython Script Executor</to>
+      <from>dim_weapon_type</from>
+      <to>dim_group_name</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>Table output</to>
-      <enabled>N</enabled>
+      <from>dim_group_name</from>
+      <to>dim_attack_type</to>
+      <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>CPython Script Executor</from>
-      <to>Table output 2</to>
-      <enabled>N</enabled>
+      <from>dim_attack_type</from>
+      <to>dim_damage_amount</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim_damage_amount</from>
+      <to>dim_target_type</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim_target_type</from>
+      <to>Database lookup</to>
+      <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>CPython Script Executor</name>
-    <type>CPythonScriptExecutor</type>
+    <name>Database lookup</name>
+    <type>DBLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -619,110 +608,29 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <rows_to_process>Row by Row</rows_to_process>
-    <rows_to_process_size/>
-    <reservoir_sampling>N</reservoir_sampling>
-    <reservoir_sampling_size/>
-    <reservoir_sampling_seed>1</reservoir_sampling_seed>
-    <include_input_as_output>Y</include_input_as_output>
-    <py_script># python script
-
-from geopy.geocoders import Nominatim
-
-place = ""
-if data.city_name.item()!="Unknown":
-	place = data.city_name.item() + ", "
-if data.provstate_name.item()!="Unknown":
-	place = data.provstate_name.item() + ", "
-place += data.country_name.item()
-
-try:
-    location = geolocator.geocode("El Salvador")
-except:
-    location = ""
-
-latitude_new = ""
-longitude_new = ""
-
-try:
-	latitude_new = location.latitude
-	longitude_new = location.longitude
-except:
-	pass
-</py_script>
-    <load_script_at_runtime>N</load_script_at_runtime>
-    <script_to_load/>
-    <continue_on_unset_vars>N</continue_on_unset_vars>
-    <py_vars_to_get>latitude_new,longitude_new,place</py_vars_to_get>
-    <include_frame_row_index>N</include_frame_row_index>
-    <frame_names>
-      <frame_name0>data</frame_name0>
-    </frame_names>
-    <incoming_step_names>
-      <step_name0>Filter rows</step_name0>
-    </incoming_step_names>
-    <output_fields>
-      <output_field>
-        <field_name>id</field_name>
-        <type>Integer</type>
-      </output_field>
-      <output_field>
-        <field_name>latitude</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>longitude</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>location</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>id_region</field_name>
-        <type>Integer</type>
-      </output_field>
-      <output_field>
-        <field_name>id_country</field_name>
-        <type>Integer</type>
-      </output_field>
-      <output_field>
-        <field_name>id_prov_state</field_name>
-        <type>Integer</type>
-      </output_field>
-      <output_field>
-        <field_name>id_city</field_name>
-        <type>Integer</type>
-      </output_field>
-      <output_field>
-        <field_name>region_name</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>country_name</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>provstate_name</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>city_name</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>latitude_new</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>longitude_new</field_name>
-        <type>String</type>
-      </output_field>
-      <output_field>
-        <field_name>place</field_name>
-        <type>String</type>
-      </output_field>
-    </output_fields>
+    <connection>global_terrorism_dw</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_date</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>attack_date</name>
+        <field>full_date</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>id</name>
+        <rename>sur_key_date</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -732,14 +640,14 @@ except:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>272</yloc>
+      <xloc>400</xloc>
+      <yloc>384</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Filter rows</name>
-    <type>FilterRows</type>
+    <name>If field value is null</name>
+    <type>IfNull</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -748,46 +656,51 @@ except:
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <send_true_to>CPython Script Executor</send_true_to>
-    <send_false_to/>
-    <compare>
-      <condition>
-        <negated>N</negated>
-        <conditions>
-          <condition>
-            <negated>N</negated>
-            <leftvalue>latitude</leftvalue>
-            <function>=</function>
-            <rightvalue/>
-            <value>
-              <name>constant</name>
-              <type>String</type>
-              <text>Unknown</text>
-              <length>-1</length>
-              <precision>-1</precision>
-              <isnull>N</isnull>
-              <mask/>
-            </value>
-          </condition>
-          <condition>
-            <negated>N</negated>
-            <operator>OR</operator>
-            <leftvalue>longitude</leftvalue>
-            <function>=</function>
-            <rightvalue/>
-            <value>
-              <name>constant</name>
-              <type>String</type>
-              <text>Unknown</text>
-              <length>-1</length>
-              <precision>-1</precision>
-              <isnull>N</isnull>
-              <mask/>
-            </value>
-          </condition>
-        </conditions>
-      </condition>
-    </compare>
+    <replaceAllByValue/>
+    <replaceAllMask/>
+    <selectFields>Y</selectFields>
+    <selectValuesType>N</selectValuesType>
+    <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>number_perpetrator_deaths</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>number_perpetrators</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>number_perpetrators_custody</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>location</name>
+        <value>Unknown</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>number_injured</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>number_deaths</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -797,8 +710,99 @@ except:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>992</xloc>
-      <yloc>80</yloc>
+      <xloc>432</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Modified JavaScript value</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>//Script here
+
+if (Number(number_perpetrators)==-99.0)
+	number_perpetrators = 0
+
+if (Number(number_perpetrators_custody)==-99.0)
+	number_perpetrators_custody = 0
+
+if (Number(number_perpetrator_deaths)==-99.0)
+	number_perpetrator_deaths = 0
+
+if (Number(number_injured)==-99.0)
+	number_injured = 0
+
+if (Number(number_deaths)==-99.0)
+	number_deaths = 0</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>number_perpetrators</name>
+        <rename>number_perpetrators</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>number_perpetrators_custody</name>
+        <rename>number_perpetrators_custody</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>number_perpetrator_deaths</name>
+        <rename>number_perpetrator_deaths</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>number_injured</name>
+        <rename>number_injured</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>number_deaths</name>
+        <rename>number_deaths</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -816,9 +820,9 @@ except:
     <fields>
       <select_unspecified>N</select_unspecified>
       <meta>
-        <name>latitude</name>
-        <rename>latitude</rename>
-        <type>String</type>
+        <name>success_attacks</name>
+        <rename>success_attacks</rename>
+        <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
         <conversion_mask/>
@@ -833,9 +837,60 @@ except:
         <storage_type/>
       </meta>
       <meta>
-        <name>longitude</name>
-        <rename>longitude</rename>
-        <type>String</type>
+        <name>number_deaths</name>
+        <rename>number_deaths</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>number_injured</name>
+        <rename>number_injured</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>number_perpetrator_deaths</name>
+        <rename>number_perpetrator_deaths</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>number_perpetrators_custody</name>
+        <rename>number_perpetrators_custody</rename>
+        <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
         <conversion_mask/>
@@ -859,82 +914,8 @@ except:
       </output>
     </remotesteps>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Sort rows</name>
-    <type>SortRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>out</prefix>
-    <sort_size>1000000</sort_size>
-    <free_memory/>
-    <compress>N</compress>
-    <compress_variable/>
-    <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>region_name</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-      <field>
-        <name>country_name</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-      <field>
-        <name>provstate_name</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-      <field>
-        <name>city_name</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-      <field>
-        <name>location</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>240</xloc>
-      <yloc>80</yloc>
+      <xloc>832</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -952,6 +933,25 @@ except:
     <connection>global_terrorism</connection>
     <sql>SELECT
   a.id
+, a.attack_date
+, sum(a.success) success_attacks
+, sum(a.n_deaths) number_deaths
+, sum(a.n_perpetrator_deaths) number_perpetrator_deaths
+, sum(a.n_perpetrators) number_perpetrators
+, sum(a.n_perpetrators_custody) number_perpetrators_custody
+, sum(a.n_injured) number_injured
+
+, r.id
+, co.id
+, ps.id
+, c.id
+, wt.id
+, gn.id
+, tt.id
+, att.id
+, ad.id
+, co.id
+
 , a.latitude
 , a.longitude
 , a.location
@@ -959,18 +959,37 @@ except:
 , a.id_country
 , a.id_prov_state
 , a.id_city
-, r.region_name
-, co.country_name
-, ps.provstate_name
-, c.city_name
+, a.id_target_nationality
+, a.id_attack_type
+, a.id_target_type
+, a.id_group_name
+, a.id_weapon_type
+, a.id_amount_damage
+
 FROM 
   attack a
-, region r
+, weapon_type wt
+, group_name gn
+, target_type tt
+, attack_type att
+, amount_damage ad
+, city c
 , country co
 , prov_state ps
-, city c
-WHERE
-a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_city=c.id LIMIT 1000
+, region r
+
+WHERE 
+a.id_region = r.id AND a.id_country = co.id AND
+a.id_prov_state = ps.id AND a.id_city = c.id AND
+a.id_target_nationality = co.id AND a.id_weapon_type = wt.id AND
+a.id_group_name = gn.id AND a.id_target_type = tt.id AND
+a.id_attack_type = att.id AND a.id_amount_damage = ad.id
+
+GROUP BY a.attack_date, a.id_region, a.id_country, a.id_prov_state, a.id_city, a.id_target_nationality,
+			att.id, wt.id, gn.id, ad.id
+
+LIMIT 500
+
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -986,14 +1005,14 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       </output>
     </remotesteps>
     <GUI>
-      <xloc>80</xloc>
-      <yloc>80</yloc>
+      <xloc>208</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Table output</name>
-    <type>TableOutput</type>
+    <name>dim_attack_type</name>
+    <type>DBLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1003,68 +1022,28 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       <schema_name/>
     </partitioning>
     <connection>global_terrorism_dw</connection>
-    <schema/>
-    <table>dt_location</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-      <field>
-        <column_name>latitude</column_name>
-        <stream_name>latitude</stream_name>
-      </field>
-      <field>
-        <column_name>longitude</column_name>
-        <stream_name>longitude</stream_name>
-      </field>
-      <field>
-        <column_name>location</column_name>
-        <stream_name>location</stream_name>
-      </field>
-      <field>
-        <column_name>id_region</column_name>
-        <stream_name>id_region</stream_name>
-      </field>
-      <field>
-        <column_name>id_country</column_name>
-        <stream_name>id_country</stream_name>
-      </field>
-      <field>
-        <column_name>id_prov_state</column_name>
-        <stream_name>id_prov_state</stream_name>
-      </field>
-      <field>
-        <column_name>id_city</column_name>
-        <stream_name>id_city</stream_name>
-      </field>
-      <field>
-        <column_name>region</column_name>
-        <stream_name>region_name</stream_name>
-      </field>
-      <field>
-        <column_name>country</column_name>
-        <stream_name>country_name</stream_name>
-      </field>
-      <field>
-        <column_name>prov_state</column_name>
-        <stream_name>provstate_name</stream_name>
-      </field>
-      <field>
-        <column_name>city</column_name>
-        <stream_name>city_name</stream_name>
-      </field>
-    </fields>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_attack_type</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>id_attack_type</name>
+        <field>id_at</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sur_key_at</name>
+        <rename>sur_key_attack_type</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -1074,14 +1053,14 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1184</xloc>
-      <yloc>80</yloc>
+      <xloc>368</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Table output 2</name>
-    <type>TableOutput</type>
+    <name>dim_damage_amount</name>
+    <type>DBLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1091,68 +1070,28 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       <schema_name/>
     </partitioning>
     <connection>global_terrorism_dw</connection>
-    <schema/>
-    <table>dt_location</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-      <field>
-        <column_name>id_region</column_name>
-        <stream_name>id_region</stream_name>
-      </field>
-      <field>
-        <column_name>region</column_name>
-        <stream_name>region_name</stream_name>
-      </field>
-      <field>
-        <column_name>id_country</column_name>
-        <stream_name>id_country</stream_name>
-      </field>
-      <field>
-        <column_name>id_prov_state</column_name>
-        <stream_name>id_prov_state</stream_name>
-      </field>
-      <field>
-        <column_name>id_city</column_name>
-        <stream_name>id_city</stream_name>
-      </field>
-      <field>
-        <column_name>city</column_name>
-        <stream_name>city_name</stream_name>
-      </field>
-      <field>
-        <column_name>country</column_name>
-        <stream_name>country_name</stream_name>
-      </field>
-      <field>
-        <column_name>prov_state</column_name>
-        <stream_name>provstate_name</stream_name>
-      </field>
-      <field>
-        <column_name>latitude</column_name>
-        <stream_name>latitude_new</stream_name>
-      </field>
-      <field>
-        <column_name>longitude</column_name>
-        <stream_name>longitude_new</stream_name>
-      </field>
-      <field>
-        <column_name>location</column_name>
-        <stream_name>location</stream_name>
-      </field>
-    </fields>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_damage_amount</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>id_amount_damage</name>
+        <field>id_da</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sur_key_da</name>
+        <rename>sur_key_damage_amount</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -1162,14 +1101,14 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       </output>
     </remotesteps>
     <GUI>
-      <xloc>864</xloc>
-      <yloc>272</yloc>
+      <xloc>208</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Unique rows</name>
-    <type>Unique</type>
+    <name>dim_group_name</name>
+    <type>DBLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1178,32 +1117,29 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <count_rows>N</count_rows>
-    <count_field/>
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
-    <fields>
-      <field>
-        <name>region_name</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-      <field>
-        <name>country_name</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-      <field>
-        <name>provstate_name</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-      <field>
-        <name>city_name</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-      <field>
-        <name>location</name>
-        <case_insensitive>N</case_insensitive>
-      </field>
-    </fields>
+    <connection>global_terrorism_dw</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_group_name</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>id_group_name</name>
+        <field>id_gn</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sur_key_gn</name>
+        <rename>sur_key_group_name</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -1213,14 +1149,14 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
-      <yloc>80</yloc>
+      <xloc>528</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>replace null location with unknown</name>
-    <type>IfNull</type>
+    <name>dim_location</name>
+    <type>DBLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1229,45 +1165,53 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <replaceAllByValue>Unknown</replaceAllByValue>
-    <replaceAllMask/>
-    <selectFields>Y</selectFields>
-    <selectValuesType>N</selectValuesType>
-    <setEmptyStringAll>N</setEmptyStringAll>
-    <valuetypes>
-      </valuetypes>
-    <fields>
-      <field>
+    <connection>global_terrorism_dw</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_location</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>id_region</name>
+        <field>id_region</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>id_country</name>
+        <field>id_country</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>id_prov_state</name>
+        <field>id_prov_state</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>id_city</name>
+        <field>id_city</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
         <name>location</name>
-        <value>Unknown</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>provstate_name</name>
-        <value>Unknown</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>city_name</name>
-        <value>Unknown</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>latitude</name>
-        <value>Unknown</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>longitude</name>
-        <value>Unknown</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
+        <field>location</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sur_key_l</name>
+        <rename>sur_key_location</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -1277,8 +1221,104 @@ a.id_region = r.id AND a.id_country=co.id AND a.id_prov_state=ps.id AND a.id_cit
       </output>
     </remotesteps>
     <GUI>
-      <xloc>784</xloc>
-      <yloc>80</yloc>
+      <xloc>832</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim_target_type</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>global_terrorism_dw</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_target_type</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>id_target_type</name>
+        <field>id_tt</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sur_key_tt</name>
+        <rename>sur_key_target_type</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>384</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim_weapon_type</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>global_terrorism_dw</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dt_weapon_type</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>id_weapon_type</name>
+        <field>id_wt</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sur_key_wt</name>
+        <rename>sur_key_weapon_type</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>688</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

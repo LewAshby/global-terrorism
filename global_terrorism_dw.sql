@@ -75,8 +75,11 @@ CREATE TABLE `ft_attack` (
   `id_attack_type` int,
   `id_amount_damage` int,
   `n_deaths` int,
+  `n_perpetrators` int,
+  `n_perpetrators_death` int,
   `n_perpetrators_custody` int,
-  `n_injured` int
+  `n_injured` int,
+  `n_success` int
 );
 
 ALTER TABLE `ft_attack` ADD FOREIGN KEY (`id_date`) REFERENCES `dt_date` (`id`);
