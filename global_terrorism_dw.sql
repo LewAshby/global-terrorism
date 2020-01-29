@@ -104,6 +104,11 @@ CREATE TABLE `ft_attack` (
   `n_success` int
 );
 
+CREATE TABLE `updates_track` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `last_update` date
+);
+
 ALTER TABLE `ft_attack` ADD FOREIGN KEY (`id_date`) REFERENCES `dt_date` (`id`);
 
 ALTER TABLE `ft_attack` ADD FOREIGN KEY (`id_weapon_type`) REFERENCES `dt_weapon_type` (`sur_key_wt`);

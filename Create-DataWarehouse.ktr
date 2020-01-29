@@ -530,39 +530,58 @@ CREATE TABLE `dt_date` (
   `month_abbreviation` varchar(5),
   `quarter_number` int,
   `quarter_name` varchar(255),
-  `is_weekend` boolean
+  `is_weekend` boolean,
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `dt_weapon_type` (
   `sur_key_wt` int PRIMARY KEY AUTO_INCREMENT,
-  `id_wt` int,
+  `id_wt` int DEFAULT 0,
   `weapon_type` varchar(255),
-  `weapon_subtype` varchar(255)
+  `weapon_subtype` varchar(255),
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `dt_group_name` (
   `sur_key_gn` int PRIMARY KEY AUTO_INCREMENT,
-  `id_gn` int,
-  `group_name` varchar(255)
+  `id_gn` int DEFAULT 0,
+  `group_name` varchar(255),
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `dt_target_type` (
   `sur_key_tt` int PRIMARY KEY AUTO_INCREMENT,
-  `id_tt` int,
+  `id_tt` int DEFAULT 0,
   `target_type` varchar(255),
-  `target_subtype` varchar(255)
+  `target_subtype` varchar(255),
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `dt_attack_type` (
   `sur_key_at` int PRIMARY KEY AUTO_INCREMENT,
-  `id_at` int,
-  `attack_type` varchar(255)
+  `id_at` int DEFAULT 0,
+  `attack_type` varchar(255),
+  `last_update` date,
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `dt_damage_amount` (
   `sur_key_da` int PRIMARY KEY AUTO_INCREMENT,
-  `id_da` int,
-  `amount_range` varchar(255)
+  `id_da` int DEFAULT 0,
+  `amount_range` varchar(255),
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `dt_location` (
@@ -577,7 +596,10 @@ CREATE TABLE `dt_location` (
   `city` varchar(255),
   `latitude` double,
   `longitude` double,
-  `location` mediumtext
+  `location` mediumtext,
+  `start_date` date,
+  `end_date` date,
+  `version` int DEFAULT 1
 );
 
 CREATE TABLE `ft_attack` (
@@ -595,6 +617,11 @@ CREATE TABLE `ft_attack` (
   `n_perpetrators_custody` int,
   `n_injured` int,
   `n_success` int
+);
+
+CREATE TABLE `updates_track` (
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `last_update` date
 );
 
 ALTER TABLE `ft_attack` ADD FOREIGN KEY (`id_date`) REFERENCES `dt_date` (`id`);

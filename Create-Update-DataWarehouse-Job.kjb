@@ -315,7 +315,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>${Internal.Entry.Current.Directory}/Load-Damage-Amounts.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}/Load-Dim-Amount-Damage.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -342,8 +342,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>320</xloc>
-      <yloc>96</yloc>
+      <xloc>608</xloc>
+      <yloc>256</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -494,8 +494,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>608</xloc>
-      <yloc>256</yloc>
+      <xloc>336</xloc>
+      <yloc>96</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -665,24 +665,6 @@
   </entries>
   <hops>
     <hop>
-      <from>Start</from>
-      <to>Create/Update Dim - Damage Amount</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Create/Update Dim - Damage Amount</from>
-      <to>Create/Update Dim - Attack Type</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>Create/Update Dim - Attack Type</from>
       <to>Create/Update Dim - Date</to>
       <from_nr>0</from_nr>
@@ -694,24 +676,6 @@
     <hop>
       <from>Create/Update Dim - Date</from>
       <to>Create/Update Dim - Group Name</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Create/Update Dim - Group Name</from>
-      <to>Create/Update Dim - Location</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Create/Update Dim - Location</from>
-      <to>Create/Update Dim - Target Type</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -748,6 +712,42 @@
     <hop>
       <from>Write last update date</from>
       <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Create/Update Dim - Group Name</from>
+      <to>Create/Update Dim - Damage Amount</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Create/Update Dim - Damage Amount</from>
+      <to>Create/Update Dim - Target Type</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>Create/Update Dim - Location</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Create/Update Dim - Location</from>
+      <to>Create/Update Dim - Attack Type</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
