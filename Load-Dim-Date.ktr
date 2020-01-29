@@ -557,121 +557,21 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>CSV file input</from>
-      <to>Sort rows 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>Calculator</from>
       <to>Sort rows</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
+      <from>Modified JavaScript value</from>
+      <to>Dimension lookup/update</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
       <from>Sort rows</from>
-      <to>Merge join</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Sort rows 2</from>
-      <to>Merge join</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Merge join</from>
       <to>Modified JavaScript value</to>
       <enabled>Y</enabled>
     </hop>
-    <hop>
-      <from>Modified JavaScript value</from>
-      <to>Table output</to>
-      <enabled>Y</enabled>
-    </hop>
   </order>
-  <step>
-    <name>CSV file input</name>
-    <type>CsvInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <filename>${Internal.Entry.Current.Directory}/countries.csv</filename>
-    <filename_field/>
-    <rownum_field/>
-    <include_filename>N</include_filename>
-    <separator>,</separator>
-    <enclosure>"</enclosure>
-    <header>Y</header>
-    <buffer_size>50000</buffer_size>
-    <lazy_conversion>Y</lazy_conversion>
-    <add_filename_result>N</add_filename_result>
-    <parallel>N</parallel>
-    <newline_possible>N</newline_possible>
-    <format>mixed</format>
-    <encoding>UTF-8</encoding>
-    <fields>
-      <field>
-        <name>﻿country</name>
-        <type>String</type>
-        <format/>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>2</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>latitude</name>
-        <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>10</length>
-        <precision>6</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>longitude</name>
-        <type>Number</type>
-        <format>#.#</format>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>11</length>
-        <precision>6</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>name</name>
-        <type>String</type>
-        <format/>
-        <currency>$</currency>
-        <decimal>.</decimal>
-        <group>,</group>
-        <length>44</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>144</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
   <step>
     <name>Calculator</name>
     <type>Calculator</type>
@@ -800,40 +700,6 @@
     <GUI>
       <xloc>288</xloc>
       <yloc>64</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Merge join</name>
-    <type>MergeJoin</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <join_type>INNER</join_type>
-    <step1>Sort rows</step1>
-    <step2>Sort rows 2</step2>
-    <keys_1>
-      <key>country_name</key>
-    </keys_1>
-    <keys_2>
-      <key>name</key>
-    </keys_2>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>400</xloc>
-      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1047,8 +913,8 @@ date_str = arr2[0]+arr2[1]+arr2[2]
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
-      <yloc>176</yloc>
+      <xloc>560</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1140,48 +1006,6 @@ date_str = arr2[0]+arr2[1]+arr2[2]
     </GUI>
   </step>
   <step>
-    <name>Sort rows 2</name>
-    <type>SortRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>out</prefix>
-    <sort_size>1000000</sort_size>
-    <free_memory/>
-    <compress>N</compress>
-    <compress_variable/>
-    <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>name</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>256</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>Table input</name>
     <type>TableInput</type>
     <description/>
@@ -1222,8 +1046,8 @@ a.id_country=c.id</sql>
     </GUI>
   </step>
   <step>
-    <name>Table output</name>
-    <type>TableOutput</type>
+    <name>Dimension lookup/update</name>
+    <type>DimensionLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1232,89 +1056,111 @@ a.id_country=c.id</sql>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>global_terrorism_dw</connection>
     <schema/>
     <table>dt_date</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>Y</update>
     <fields>
+      <key>
+        <name>year</name>
+        <lookup>year</lookup>
+      </key>
+      <key>
+        <name>month_number</name>
+        <lookup>month</lookup>
+      </key>
+      <key>
+        <name>day_in_month</name>
+        <lookup>day_in_month</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
       <field>
-        <column_name>year</column_name>
-        <stream_name>year</stream_name>
+        <name>attack_date</name>
+        <lookup>full_date</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>day_of_week</column_name>
-        <stream_name>day_of_week</stream_name>
+        <name>date_str</name>
+        <lookup>date_string</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>day_in_month</column_name>
-        <stream_name>day_in_month</stream_name>
+        <name>month_name</name>
+        <lookup>month_name</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>day_in_year</column_name>
-        <stream_name>day_in_year</stream_name>
+        <name>month_abbreviation</name>
+        <lookup>month_abbreviation</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>week_in_year</column_name>
-        <stream_name>week_in_year</stream_name>
+        <name>day_of_week</name>
+        <lookup>day_of_week</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>quarter_number</column_name>
-        <stream_name>quarter_number</stream_name>
+        <name>day_in_year</name>
+        <lookup>day_in_year</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>day_name</column_name>
-        <stream_name>day_name</stream_name>
+        <name>day_name</name>
+        <lookup>day_name</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>day_abbreviation</column_name>
-        <stream_name>day_abbreviation</stream_name>
+        <name>day_abbreviation</name>
+        <lookup>day_abbreviation</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>month_name</column_name>
-        <stream_name>month_name</stream_name>
+        <name>week_number</name>
+        <lookup>week_in_month</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>month_abbreviation</column_name>
-        <stream_name>month_abbreviation</stream_name>
+        <name>week_in_year</name>
+        <lookup>week_in_year</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>quarter_name</column_name>
-        <stream_name>quarter_name</stream_name>
+        <name>weekend</name>
+        <lookup>is_weekend</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>is_weekend</column_name>
-        <stream_name>weekend</stream_name>
+        <name>quarter_number</name>
+        <lookup>quarter_number</lookup>
+        <update>Punch through</update>
       </field>
       <field>
-        <column_name>full_date</column_name>
-        <stream_name>attack_date</stream_name>
+        <name>quarter_name</name>
+        <lookup>quarter_name</lookup>
+        <update>Punch through</update>
       </field>
-      <field>
-        <column_name>week_in_month</column_name>
-        <stream_name>week_number</stream_name>
-      </field>
-      <field>
-        <column_name>month</column_name>
-        <stream_name>month_number</stream_name>
-      </field>
-      <field>
-        <column_name>date_string</column_name>
-        <stream_name>date_str</stream_name>
-      </field>
+      <return>
+        <name>id</name>
+        <rename/>
+        <creation_method>autoinc</creation_method>
+        <use_autoinc>Y</use_autoinc>
+        <version>version</version>
+      </return>
     </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -1325,7 +1171,7 @@ a.id_country=c.id</sql>
     </remotesteps>
     <GUI>
       <xloc>768</xloc>
-      <yloc>176</yloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

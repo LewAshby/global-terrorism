@@ -68,7 +68,8 @@ CREATE TABLE `attack` (
   `id_target_type` int,
   `id_group_name` int,
   `id_weapon_type` int,
-  `id_amount_damage` int
+  `id_amount_damage` int,
+  `created_at` date
 );
 
 ALTER TABLE `attack` ADD FOREIGN KEY (`id_region`) REFERENCES `region` (`id`);
