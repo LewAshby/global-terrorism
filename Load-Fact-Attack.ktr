@@ -599,7 +599,7 @@
     <hop>
       <from>Database lookup</from>
       <to>fact_attack_out</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>Table input 2</from>
@@ -612,11 +612,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Database lookup 2</from>
-      <to>fact_attack_out 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>If field value is null 2</from>
       <to>Modified JavaScript value 2</to>
       <enabled>Y</enabled>
@@ -624,46 +619,6 @@
     <hop>
       <from>Modified JavaScript value 2</from>
       <to>Select values 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Select values 2</from>
-      <to>dim_location 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_attack_type 2</from>
-      <to>dim_damage_amount 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_damage_amount 2</from>
-      <to>dim_target_type 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_group_name 2</from>
-      <to>dim_attack_type 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_location 2</from>
-      <to>dim_weapon_type 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_target_type 2</from>
-      <to>Database lookup 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>dim_weapon_type 2</from>
-      <to>dim_group_name 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>new rows to insert</from>
-      <to>If field value is null 2</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -686,7 +641,82 @@
       <to>Table input</to>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>Select values 2</from>
+      <to>dim locat</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim locat</from>
+      <to>dim weap type</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim weap type</from>
+      <to>dim target type</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim target type</from>
+      <to>dim admount dam</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim admount dam</from>
+      <to>dim attack type</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim attack type</from>
+      <to>dim group name</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim group name</from>
+      <to>dim date 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dim date 2</from>
+      <to>fact_attack_out 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>new rows to insert</from>
+      <to>If field value is null 2</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
+  <step>
+    <name>Blocking step</name>
+    <type>BlockingStep</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <pass_all_rows>Y</pass_all_rows>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>block</prefix>
+    <cache_size>5000</cache_size>
+    <compress>Y</compress>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>416</xloc>
+      <yloc>416</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
   <step>
     <name>Database lookup</name>
     <type>DBLookup</type>
@@ -732,54 +762,6 @@
     <GUI>
       <xloc>1040</xloc>
       <yloc>560</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Database lookup 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_date</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>attack_date</name>
-        <field>full_date</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>id</name>
-        <rename>sur_key_date</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>80</xloc>
-      <yloc>768</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1078,57 +1060,67 @@ if (Number(number_deaths)&lt;0)
         <jsScript_script>//Script here
 
 if (Number(number_perpetrators)&lt;0)
-	number_perpetrators = 0
+	var number_perpetrators_1 = 0
+else
+	var number_perpetrators_1 = number_perpetrators
 
 if (Number(number_perpetrators_custody)&lt;0)
-	number_perpetrators_custody = 0
+	var number_perpetrators_custody_1 = 0
+else
+	var number_perpetrators_custody_1 = number_perpetrators_custody
 
 if (Number(number_perpetrator_deaths)&lt;0)
-	number_perpetrator_deaths = 0
+	var number_perpetrator_deaths_1 = 0
+else
+	var number_perpetrator_deaths_1 = number_perpetrator_deaths
 
 if (Number(number_injured)&lt;0)
-	number_injured = 0
+	var number_injured_1 = 0
+else
+	var number_injured_1 = number_injured
 
 if (Number(number_deaths)&lt;0)
-	number_deaths = 0</jsScript_script>
+	var number_deaths_1 = 0
+else
+	var number_deaths_1 = number_deaths</jsScript_script>
       </jsScript>
     </jsScripts>
     <fields>
       <field>
-        <name>number_perpetrators</name>
-        <rename>number_perpetrators</rename>
+        <name>number_perpetrators_1</name>
+        <rename>number_perpetrators_1</rename>
         <type>Integer</type>
         <length>-1</length>
         <precision>-1</precision>
         <replace>N</replace>
       </field>
       <field>
-        <name>number_perpetrators_custody</name>
-        <rename>number_perpetrators_custody</rename>
+        <name>number_perpetrators_custody_1</name>
+        <rename>number_perpetrators_custody_1</rename>
         <type>Integer</type>
         <length>-1</length>
         <precision>-1</precision>
         <replace>N</replace>
       </field>
       <field>
-        <name>number_perpetrator_deaths</name>
-        <rename>number_perpetrator_deaths</rename>
+        <name>number_perpetrator_deaths_1</name>
+        <rename>number_perpetrator_deaths_1</rename>
         <type>Integer</type>
         <length>-1</length>
         <precision>-1</precision>
         <replace>N</replace>
       </field>
       <field>
-        <name>number_injured</name>
-        <rename>number_injured</rename>
+        <name>number_injured_1</name>
+        <rename>number_injured_1</rename>
         <type>Integer</type>
         <length>-1</length>
         <precision>-1</precision>
         <replace>N</replace>
       </field>
       <field>
-        <name>number_deaths</name>
-        <rename>number_deaths</rename>
+        <name>number_deaths_1</name>
+        <rename>number_deaths_1</rename>
         <type>Integer</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -1657,54 +1649,6 @@ FROM updates_track ORDER BY id DESC LIMIT 1
     </GUI>
   </step>
   <step>
-    <name>dim_attack_type 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_attack_type</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>id_attack_type</name>
-        <field>id_at</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sur_key_at</name>
-        <rename>sur_key_attack_type</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>640</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>dim_damage_amount</name>
     <type>DBLookup</type>
     <description/>
@@ -1753,54 +1697,6 @@ FROM updates_track ORDER BY id DESC LIMIT 1
     </GUI>
   </step>
   <step>
-    <name>dim_damage_amount 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_damage_amount</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>id_amount_damage</name>
-        <field>id_da</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sur_key_da</name>
-        <rename>sur_key_damage_amount</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>224</xloc>
-      <yloc>640</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>dim_group_name</name>
     <type>DBLookup</type>
     <description/>
@@ -1845,54 +1741,6 @@ FROM updates_track ORDER BY id DESC LIMIT 1
     <GUI>
       <xloc>1136</xloc>
       <yloc>400</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>dim_group_name 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_group_name</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>id_group_name</name>
-        <field>id_gn</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sur_key_gn</name>
-        <rename>sur_key_group_name</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>512</xloc>
-      <yloc>640</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1969,78 +1817,6 @@ FROM updates_track ORDER BY id DESC LIMIT 1
     </GUI>
   </step>
   <step>
-    <name>dim_location 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_location</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>id_region</name>
-        <field>id_region</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>id_country</name>
-        <field>id_country</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>id_prov_state</name>
-        <field>id_prov_state</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>id_city</name>
-        <field>id_city</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>location</name>
-        <field>location</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sur_key_l</name>
-        <rename>sur_key_location</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>384</xloc>
-      <yloc>528</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>dim_target_type</name>
     <type>DBLookup</type>
     <description/>
@@ -2089,54 +1865,6 @@ FROM updates_track ORDER BY id DESC LIMIT 1
     </GUI>
   </step>
   <step>
-    <name>dim_target_type 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_target_type</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>id_target_type</name>
-        <field>id_tt</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sur_key_tt</name>
-        <rename>sur_key_target_type</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>80</xloc>
-      <yloc>640</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>dim_weapon_type</name>
     <type>DBLookup</type>
     <description/>
@@ -2181,54 +1909,6 @@ FROM updates_track ORDER BY id DESC LIMIT 1
     <GUI>
       <xloc>1296</xloc>
       <yloc>400</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>dim_weapon_type 2</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>global_terrorism_dw</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dt_weapon_type</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>id_weapon_type</name>
-        <field>id_wt</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>sur_key_wt</name>
-        <rename>sur_key_weapon_type</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>512</xloc>
-      <yloc>528</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -2436,9 +2116,65 @@ FROM updates_track ORDER BY id DESC LIMIT 1
       <schema_name/>
     </partitioning>
     <connection>global_terrorism</connection>
-    <sql>SELECT *
-FROM attack
-WHERE created_at>?
+    <sql>SELECT
+  a.id
+, a.attack_date
+, sum(a.success) success_attacks
+, sum(a.n_deaths) number_deaths
+, sum(a.n_perpetrator_deaths) number_perpetrator_deaths
+, sum(a.n_perpetrators) number_perpetrators
+, sum(a.n_perpetrators_custody) number_perpetrators_custody
+, sum(a.n_injured) number_injured
+
+, r.id
+, co.id
+, ps.id
+, c.id
+, wt.id
+, gn.id
+, tt.id
+, att.id
+, ad.id
+, co.id
+
+, a.latitude
+, a.longitude
+, a.location
+, a.id_region
+, a.id_country
+, a.id_prov_state
+, a.id_city
+, a.id_target_nationality
+, a.id_attack_type
+, a.id_target_type
+, a.id_group_name
+, a.id_weapon_type
+, a.id_amount_damage
+
+FROM 
+  attack a
+, weapon_type wt
+, group_name gn
+, target_type tt
+, attack_type att
+, amount_damage ad
+, city c
+, country co
+, prov_state ps
+, region r
+
+WHERE 
+a.id_region = r.id AND a.id_country = co.id AND
+a.id_prov_state = ps.id AND a.id_city = c.id AND
+a.id_target_nationality = co.id AND a.id_weapon_type = wt.id AND
+a.id_group_name = gn.id AND a.id_target_type = tt.id AND
+a.id_attack_type = att.id AND a.id_amount_damage = ad.id
+AND
+created_at>?
+
+GROUP BY a.attack_date, a.id_region, a.id_country, a.id_prov_state, a.id_city, a.id_target_nationality,
+			att.id, wt.id, gn.id, ad.id
+
 </sql>
     <limit>0</limit>
     <lookup>Blocking step</lookup>
@@ -2454,14 +2190,14 @@ WHERE created_at>?
       </output>
     </remotesteps>
     <GUI>
-      <xloc>288</xloc>
+      <xloc>272</xloc>
       <yloc>416</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Blocking step</name>
-    <type>BlockingStep</type>
+    <name>dim locat</name>
+    <type>DimensionLookup</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -2470,11 +2206,54 @@ WHERE created_at>?
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <pass_all_rows>Y</pass_all_rows>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>block</prefix>
+    <schema/>
+    <table>dt_location</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>id_region</name>
+        <lookup>id_region</lookup>
+      </key>
+      <key>
+        <name>id_country</name>
+        <lookup>id_country</lookup>
+      </key>
+      <key>
+        <name>id_prov_state</name>
+        <lookup>id_prov_state</lookup>
+      </key>
+      <key>
+        <name>id_city</name>
+        <lookup>id_city</lookup>
+      </key>
+      <key>
+        <name>location</name>
+        <lookup>location</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>sur_key_l</name>
+        <rename>sur_key_location</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
     <cache_size>5000</cache_size>
-    <compress>Y</compress>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -2485,7 +2264,349 @@ WHERE created_at>?
     </remotesteps>
     <GUI>
       <xloc>416</xloc>
-      <yloc>416</yloc>
+      <yloc>528</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim weap type</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <schema/>
+    <table>dt_weapon_type</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>id_weapon_type</name>
+        <lookup>id_wt</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>sur_key_wt</name>
+        <rename>sur_key_weapon_type</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>560</xloc>
+      <yloc>528</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim target type</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <schema/>
+    <table>dt_target_type</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>id_target_type</name>
+        <lookup>id_tt</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>sur_key_tt</name>
+        <rename>sur_key_target_type</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>560</xloc>
+      <yloc>640</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim admount dam</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <schema/>
+    <table>dt_damage_amount</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>id_amount_damage</name>
+        <lookup>id_da</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>sur_key_da</name>
+        <rename>sur_key_damage_amount</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>640</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim attack type</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <schema/>
+    <table>dt_attack_type</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>id_attack_type</name>
+        <lookup>sur_key_at</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>sur_key_at</name>
+        <rename>sur_key_attack_type</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>224</xloc>
+      <yloc>640</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim group name</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <schema/>
+    <table>dt_group_name</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>id_group_name</name>
+        <lookup>id_gn</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>sur_key_gn</name>
+        <rename>sur_key_group_name</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>640</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dim date 2</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <schema/>
+    <table>dt_date</table>
+    <connection>global_terrorism_dw</connection>
+    <commit>100</commit>
+    <update>N</update>
+    <fields>
+      <key>
+        <name>attack_date</name>
+        <lookup>full_date</lookup>
+      </key>
+      <date>
+        <name/>
+        <from>start_date</from>
+        <to>end_date</to>
+      </date>
+      <return>
+        <name>id</name>
+        <rename>sur_key_date</rename>
+        <creation_method>tablemax</creation_method>
+        <use_autoinc>N</use_autoinc>
+        <version>version</version>
+      </return>
+    </fields>
+    <sequence/>
+    <min_year>1900</min_year>
+    <max_year>2199</max_year>
+    <cache_size>5000</cache_size>
+    <preload_cache>N</preload_cache>
+    <use_start_date_alternative>N</use_start_date_alternative>
+    <start_date_alternative>none</start_date_alternative>
+    <start_date_field_name/>
+    <useBatch>N</useBatch>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>768</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
